@@ -20,7 +20,7 @@
 			<fileset dir="test/results">
 				<include name="*.xml" />
 			</fileset>
-			<report format="frames" todir="test/junithtml" styledir="../mxunit/ant/xsl" />
+			<report format="frames" todir="test/junithtml" styledir="C:/eclipse/source/mxunit/ant/xsl" />
 		</junitreport>
 	</target>
 
