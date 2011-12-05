@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project name="MXUnitTask" basedir="." default="main">
+
+	<mkdir dir="test/results" />
+	<target name="main" depends="runtests,junitreport" description="Main target for running tests." />
+
+	<target name="runtests" description="Make output directories and run the MXUnit task">
+		<taskdef name="mxunittask" classname="org.mxunit.ant.MXUnitAntTask"
+			classpath="lib/mxunit-ant.jar" />
+		<mxunittask server="localhost" port="80" outputdir="test/results"
+			verbose="true">
+			<directory path="c:\eclipse\source\CFCalculator\www"
+				recurse="true" componentPath="mxunit.tests.framework" />
+
+		</mxunittask>
+	</target>
+
+	<target name="junitreport" description="Create a report for the rest result">
+		<mkdir dir="test/junithtml" />
+		<junitreport todir="test/junithtml">
+			<fileset dir="test/results">
+				<include name="*.xml" />
+			</fileset>
+			<report format="frames" todir="test/junithtml" styledir="../../ant/xsl" />
+		</junitreport>
+	</target>
+
+
+
+</project>
