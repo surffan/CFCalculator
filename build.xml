@@ -9,9 +9,8 @@
 			classpath="lib/mxunit-ant.jar" />
 		<mxunittask server="localhost" port="80" outputdir="test/results"
 			verbose="true">
-			<directory path="c:\eclipse\source\CFCalculator\www"
-				recurse="true" componentPath="mxunit.tests.framework" />
-
+			<directory path="c:/eclipse/source/CFCalculator/www/domain"
+				recurse="true" componentPath="" />
 		</mxunittask>
 	</target>
 
@@ -21,7 +20,7 @@
 			<fileset dir="test/results">
 				<include name="*.xml" />
 			</fileset>
-			<report format="frames" todir="test/junithtml" styledir="../../ant/xsl" />
+			<report format="frames" todir="test/junithtml" styledir="../mxunit/ant/xsl" />
 		</junitreport>
 	</target>
 
