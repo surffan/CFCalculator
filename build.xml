@@ -1,26 +1,49 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <project name="MXUnitTask" basedir="." default="main">
 
-	<mkdir dir="test/results" />
+	<property name="project.name" value="CFCalculator" />
+	<property name="project.testprefix" value="test_" />
+
+	<property name="testresult.dir" value="test" />
+	<property name="mxunit.syledir" value="C:/eclipse/source/mxunit/ant/xsl" />
+
+	<property name="cfserver.deploydir" value="c:/eclipse/source" />
+	<property name="cfserver.host" value="localhost" />
+	<property name="cfserver.port" value="80" />
+
+	<property name="project.testname" value="${project.testprefix}${project.name}" />
+
+
+
 	<target name="main" depends="runtests,junitreport" description="Main target for running tests." />
 
-	<target name="runtests" description="Make output directories and run the MXUnit task">
-		<taskdef name="mxunittask" classname="org.mxunit.ant.MXUnitAntTask"
-			classpath="lib/mxunit-ant.jar" />
-		<mxunittask server="localhost" port="80" outputdir="test/results"
-			verbose="true">
-			<directory path="c:/eclipse/source/CFCalculator/www/domain"
-				recurse="true" componentPath="" />
+	<target name="copyToDevServer">
+		<copy todir="${cfserver.deploydir}/${project.testname}">
+			<fileset dir="." />
+		</copy>
+	</target>
+
+	<target name="cleanOnDevServer">
+		<delete dir="${cfserver.deploydir}/${project.testname}" />
+	</target>
+
+	<target name="runtests" depends="copyToDevServer" description="Make output directories and run the MXUnit task">
+		<mkdir dir="${testresult.dir}/results" />
+		<taskdef name="mxunittask" classname="org.mxunit.ant.MXUnitAntTask" classpath="lib/mxunit-ant.jar" />
+
+		<mxunittask server="${cfserver.host}" port="${cfserver.port}" outputdir="${testresult.dir}/results" verbose="true">
+			<directory path="${cfserver.deploydir}/${project.testname}" recurse="true" componentPath="${project.testname}" />
 		</mxunittask>
+		<antcall target="cleanOnDevServer"/>
 	</target>
 
 	<target name="junitreport" description="Create a report for the rest result">
 		<mkdir dir="test/junithtml" />
 		<junitreport todir="test/junithtml">
-			<fileset dir="test/results">
+			<fileset dir="${testresult.dir}/results">
 				<include name="*.xml" />
 			</fileset>
-			<report format="frames" todir="test/junithtml" styledir="C:/eclipse/source/mxunit/ant/xsl" />
+			<report format="frames" todir="${testresult.dir}/junithtml" styledir="${mxunit.syledir}" />
 		</junitreport>
 	</target>
 
