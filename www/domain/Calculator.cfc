@@ -2,20 +2,48 @@
 
 	<cfscript>
 		variables.currentValue = 0;
+		variables.currentOperator = "";
 	
-		function init()
-		{
+		function init() {
 			return this;
 		}
 		
-		function calculate(expression)
-		{
+		function calculate(expression) {
 			var value = reMatch("[0-9]+", expression);
-			var operator = reMatch("[\+]", expression);
+			var operator = reMatch("[\+-]", expression);
 			
-			variables.currentValue = currentValue + value[1];
+			switch(currentOperator) {
+				case "": {
+					variables.currentValue = value[1];
+					break;
+				}
+				case "+": {
+					variables.currentValue = currentValue + value[1];
+					break;
+				}
+				case "-": {
+					variables.currentValue = currentValue - value[1];
+					break;
+				}
+			}
+			
+			if(ArrayLen(operator) > 0) {
+				variables.currentOperator = operator[1];
+			}
+			else {
+				variables.currentOperator = "";
+			}
 		
 			return currentValue;
+		}
+		
+		function reset() {
+			variables.currentValue = 0;
+			variables.currentOperator = "";
+		}
+		
+		function getValue() {
+			return variables.currentValue;
 		}
 		
 	</cfscript>
