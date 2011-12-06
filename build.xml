@@ -5,6 +5,7 @@
 	<property name="project.testprefix" value="test_" />
 
 	<property name="testresult.dir" value="test" />
+	<property name="dist.dir" value="dist" />
 	<property name="mxunit.syledir" value="C:/eclipse/source/mxunit/ant/xsl" />
 
 	<property name="cfserver.deploydir" value="c:/eclipse/source" />
@@ -13,17 +14,25 @@
 
 	<property name="project.testname" value="${project.testprefix}${project.name}" />
 
+	<target name="main" depends="clean,runtests,junitreport,dist" description="Main target for running tests." />
 
-
-	<target name="main" depends="runtests,junitreport" description="Main target for running tests." />
-
-	<target name="copyToDevServer">
+	<target name="clean" description="Delete distribution fragments and test results">
+		<antcall target="cleanOnDevServer"/>
+		<delete dir="${dist.dir}" />
+		<delete dir="${testresult.dir}" />
+	</target>
+	
+	<target name="copyToDevServer" description="Copy the project from the current folder to the dev servers webroot.">
 		<copy todir="${cfserver.deploydir}/${project.testname}">
 			<fileset dir="." />
 		</copy>
 	</target>
 
-	<target name="cleanOnDevServer">
+	<target name="dist" depends="clean" description="Create a zip file without the tests">
+		<zip destfile="${dist.dir}/${project.name}.zip" basedir="." excludes="${testresult.dir}/,lib/,.*,**/*Test*.cfc,settings.xml,build.xml,.*/" />
+	</target>
+
+	<target name="cleanOnDevServer" description="Delete the folder used to run the tests.">
 		<delete dir="${cfserver.deploydir}/${project.testname}" />
 	</target>
 
@@ -34,7 +43,7 @@
 		<mxunittask server="${cfserver.host}" port="${cfserver.port}" outputdir="${testresult.dir}/results" verbose="true">
 			<directory path="${cfserver.deploydir}/${project.testname}" recurse="true" componentPath="${project.testname}" />
 		</mxunittask>
-		<antcall target="cleanOnDevServer"/>
+		<antcall target="cleanOnDevServer" />
 	</target>
 
 	<target name="junitreport" description="Create a report for the rest result">
