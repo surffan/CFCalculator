@@ -10,7 +10,8 @@
 		}
 		
 		function testSimpleNumber() {
-			fail("Not implemented yet");
+			var actual = variables.calculator.calculate("42");
+			assertEquals("42", actual);
 		}
 		
 	</cfscript>

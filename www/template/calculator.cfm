@@ -10,11 +10,3 @@
 	<cfinput name="calc" type="text">
 	<cfinput name="sumit" type="submit" value="Submit!">
 </cfform>
-
-<cfswitch expression="#form.action#">
-	<cfcase value="calc">
-		<cfoutput>
-			CALC!
-		</cfoutput>
-	</cfcase>
-</cfswitch>
