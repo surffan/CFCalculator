@@ -1,8 +1,9 @@
 ﻿<cfcomponent output="false">
 
 	<cfscript>
-		variables.currentValue = 0;
-		variables.currentOperator = "";
+		currentValue = 0;
+		currentOperator = "";
+		history = "";
 	
 		function init() {
 			return this;
@@ -11,39 +12,47 @@
 		function calculate(expression) {
 			var value = reMatch("[0-9]+", expression);
 			var operator = reMatch("[\+-]", expression);
+			history = history & expression;
 			
-			switch(currentOperator) {
-				case "": {
-					variables.currentValue = value[1];
-					break;
+			if(ArrayLen(value) > 0) {
+				switch(currentOperator) {
+					case "": {
+						currentValue = value[1];
+						history = expression;
+						break;
+					}
+					case "+": {
+						currentValue = currentValue + value[1];
+						break;
+					}
+					case "-": {
+						currentValue = currentValue - value[1];
+						break;
+					}
 				}
-				case "+": {
-					variables.currentValue = currentValue + value[1];
-					break;
-				}
-				case "-": {
-					variables.currentValue = currentValue - value[1];
-					break;
-				}
-			}
-			
-			if(ArrayLen(operator) > 0) {
-				variables.currentOperator = operator[1];
-			}
-			else {
-				variables.currentOperator = "";
 			}
 		
+			if(ArrayLen(operator) > 0) {
+				currentOperator = operator[1];
+			}
+			else {
+				currentOperator = "";
+			}
 			return currentValue;
 		}
 		
 		function reset() {
-			variables.currentValue = 0;
-			variables.currentOperator = "";
+			currentValue = 0;
+			currentOperator = "";
+			history = "";
 		}
 		
 		function getValue() {
-			return variables.currentValue;
+			return currentValue;
+		}
+		
+		function getHistory() {
+			return history;
 		}
 		
 	</cfscript>

@@ -2,46 +2,77 @@
 	<cfscript>
 		
 		function setUp() {
-			variables.calculator = createobject("component","Calculator");
+			calculator = createobject("component","Calculator");
 		}
 
 		function tearDown() {
 			
 		}
 		
+		function testEmpthyInput() {
+			calculator.calculate("");
+			assertEquals(0,calculator.getValue());
+		}
+		
 		function testSimpleNumber() {
-			var actual = variables.calculator.calculate("42");
-			assertEquals(42, actual);
+			calculator.calculate("42");
+			assertEquals(42, calculator.getValue());
 		}
 		
 		function testSimpleAddidition() {
-			var actual = variables.calculator.calculate("5+");
-			assertEquals(5, actual);
-			actual = variables.calculator.calculate("4");
-			assertEquals(9,actual);
+			calculator.calculate("5+");
+			assertEquals(5, calculator.getValue());
+			calculator.calculate("4");
+			assertEquals(9,calculator.getValue());
 		}
 		
 		function testMultipleAddition() {
-			var act = 0;
-			variables.calculator.calculate("1+");
-			variables.calculator.calculate("2+");
-			act = variables.calculator.calculate("3");
-			assertEquals(6,act);
+			calculator.calculate("1+");
+			calculator.calculate("2+");
+			calculator.calculate("3");
+			assertEquals(6,calculator.getValue());
 		}
 		
 		function testSubtraction() {
 			var act = 0;
-			variables.calculator.calculate("12-");
-			act = variables.calculator.calculate("4");
-			assertEquals(8,act);
+			calculator.calculate("12-");
+			calculator.calculate("4");
+			assertEquals(8,calculator.getValue());
 		}
 		
 		function testReset() {
-			var act = 0;
-			variables.calculator.calculate("13");
-			variables.calculator.reset();
-			act = variables.calculator.getValue();
-			assertEquals(0,act);
+			calculator.calculate("13");
+			calculator.reset();
+			calculator.getValue();
+			assertEquals(0,calculator.getValue());
+		}
+		
+		function testSimpleHistory() {
+			calculator.calculate("12");
+			assertEquals("12",calculator.getHistory());
+		}
+		
+		function testHistoryInProgress() {
+			calculator.calculate("4+");
+			assertEquals("4+",calculator.getHistory());
+			calculator.calculate("5-");
+			assertEquals("4+5-",calculator.getHistory());
+			calculator.calculate("6");
+			assertEquals("4+5-6",calculator.getHistory());
+		}
+		
+		function testHistoryReset() {
+			calculator.calculate("43+");
+			calculator.calculate("3");
+			assertEquals("43+3",calculator.getHistory());
+			calculator.reset();
+			assertEquals("",calculator.getHistory());
+		}
+		
+		function testHistoryWhenNoCalculationIsDone() {
+			calculator.calculate("12");
+			calculator.calculate("42");
+			assertEquals("42",calculator.getHistory());
 		}
 		
 	</cfscript>
